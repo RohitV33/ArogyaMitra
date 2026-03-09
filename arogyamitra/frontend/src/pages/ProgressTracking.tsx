@@ -32,7 +32,7 @@ const ProgressTracking: React.FC = () => {
     setBodyMetrics(metrics);
 
     // Load progress stats
-    fetch('http://localhost:8000/api/progress/analytics', {
+    fetch('https://arogyamitra-o8sd.onrender.com/api/progress/analytics', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('arogyamitra_token')}`,
       },

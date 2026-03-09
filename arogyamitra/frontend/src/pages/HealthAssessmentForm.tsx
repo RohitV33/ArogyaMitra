@@ -1,8 +1,8 @@
 // HealthAssessment.tsx - Activity 4.2
 // 12-question health form covering medical history, allergies, injuries, medications
 // Matches the submitAssessmentMutation pattern from screenshots
-
-import React, { useState } from 'react';
+import { API_BASE_URL } from "../api";
+import React, {useEffect, useState } from 'react';
 
 // Assessment questions (12 questions as mentioned in screenshots)
 const QUESTIONS = {
@@ -31,6 +31,12 @@ const QUESTIONS = {
 };
 
 const HealthAssessmentForm: React.FC = () => {
+
+  useEffect(() => {
+  fetch(`${API_BASE_URL}/`)
+    .then(res => res.json())
+    .then(data => console.log(data));
+}, []);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
@@ -64,7 +70,7 @@ const HealthAssessmentForm: React.FC = () => {
       localStorage.setItem('body-metrics', JSON.stringify({ ...bodyMetrics, timestamp: new Date().toISOString() }));
 
       // Submit to backend
-      const response = await fetch('http://localhost:8000/api/health/assess', {
+      const response = await fetch('https://arogyamitra-o8sd.onrender.com/api/health/assess', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,7 +83,7 @@ const HealthAssessmentForm: React.FC = () => {
 
       // Call AI health analysis endpoint (as shown in screenshot)
       try {
-        const analysisResponse = await fetch('http://localhost:8000/api/health/analyze', {
+        const analysisResponse = await fetch('https://arogyamitra-o8sd.onrender.com/api/health/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify({

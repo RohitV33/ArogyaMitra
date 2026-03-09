@@ -69,7 +69,7 @@ const ArogyaCoach: React.FC<ArogyaCoachProps> = ({ isOpen, onClose }) => {
 
     try {
       const token = localStorage.getItem('arogyamitra_token');
-      const response = await fetch('http://localhost:8000/api/chat/aromi', {
+      const response = await fetch('https://arogyamitra-o8sd.onrender.com/api/chat/aromi', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ const ArogyaCoach: React.FC<ArogyaCoachProps> = ({ isOpen, onClose }) => {
         {
           id: (Date.now() + 1).toString(),
           type: 'aromi',
-          content: '⚠️ Connection error. Please ensure the backend server is running at localhost:8000.',
+          content: '⚠️ Connection error. Please ensure the backend server is running .',
           timestamp: new Date(),
         },
       ]);

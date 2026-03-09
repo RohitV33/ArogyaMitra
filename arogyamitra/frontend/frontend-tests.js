@@ -7,7 +7,7 @@
  * Open browser console and run: testArogyaMitra()
  */
 
-const API_BASE = "http://localhost:8000/api";
+const API_BASE = "https://arogyamitra-o8sd.onrender.com";
 
 // ─── Test Runner ─────────────────────────────────────────────────────────────
 let passed = 0, failed = 0;

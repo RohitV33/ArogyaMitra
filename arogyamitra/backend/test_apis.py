@@ -12,7 +12,7 @@ import json
 import sys
 from datetime import datetime
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "https://arogyamitra-o8sd.onrender.com"
 TOKEN = None
 TEST_USER = {
     "email": f"test_{int(datetime.now().timestamp())}@arogyamitra.test",

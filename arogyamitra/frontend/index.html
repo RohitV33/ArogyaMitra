@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ArogyaMitra – AI-Driven Fitness & Wellness Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/recharts@2.5.0/umd/Recharts.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-primary: #050a0e;
+    --bg-secondary: #0a1628;
+    --bg-card: #0d1f35;
+    --bg-card-hover: #112540;
+    --accent-primary: #00d4aa;
+    --accent-secondary: #0099ff;
+    --accent-glow: rgba(0, 212, 170, 0.15);
+    --accent-glow-blue: rgba(0, 153, 255, 0.15);
+    --text-primary: #e8f4f8;
+    --text-secondary: #7a9bb5;
+    --text-muted: #4a6480;
+    --border: rgba(0, 212, 170, 0.15);
+    --border-blue: rgba(0, 153, 255, 0.2);
+    --danger: #ff4757;
+    --warning: #ffa502;
+    --success: #00d4aa;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'Space Grotesk', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  #root { min-height: 100vh; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+  ::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 3px; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(0,212,170,0.3); } 50% { box-shadow: 0 0 40px rgba(0,212,170,0.6); } }
+  @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+  @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+
+  .fadeIn { animation: fadeIn 0.5s ease forwards; }
+  .spinner { animation: spin 1s linear infinite; }
+  .floating { animation: float 3s ease-in-out infinite; }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.3px;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,212,170,0.4); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--accent-primary);
+    border: 1px solid var(--accent-primary);
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .btn-outline:hover { background: var(--accent-glow); transform: translateY(-1px); }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s ease;
+  }
+  .card:hover { border-color: rgba(0,212,170,0.3); background: var(--bg-card-hover); }
+
+  .input-field {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    outline: none;
+  }
+  .input-field:focus { border-color: var(--accent-primary); background: rgba(0,212,170,0.05); box-shadow: 0 0 0 3px rgba(0,212,170,0.1); }
+  .input-field::placeholder { color: var(--text-muted); }
+
+  select.input-field option { background: var(--bg-card); color: var(--text-primary); }
+
+  .label { display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .badge-green { background: rgba(0,212,170,0.15); color: var(--accent-primary); border: 1px solid rgba(0,212,170,0.3); }
+  .badge-blue { background: rgba(0,153,255,0.15); color: var(--accent-secondary); border: 1px solid rgba(0,153,255,0.3); }
+  .badge-red { background: rgba(255,71,87,0.15); color: var(--danger); border: 1px solid rgba(255,71,87,0.3); }
+
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    animation: fadeIn 0.3s ease;
+    max-width: 350px;
+  }
+  .toast-success { background: rgba(0,212,170,0.95); color: #000; }
+  .toast-error { background: rgba(255,71,87,0.95); color: #fff; }
+
+  .mesh-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .mesh-bg::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 60%;
+    height: 80%;
+    background: radial-gradient(ellipse, rgba(0,212,170,0.06) 0%, transparent 60%);
+    border-radius: 50%;
+  }
+  .mesh-bg::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    right: -10%;
+    width: 50%;
+    height: 70%;
+    background: radial-gradient(ellipse, rgba(0,153,255,0.06) 0%, transparent 60%);
+    border-radius: 50%;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback, createContext, useContext } = React;
+// Safe Recharts destructuring - prevents crash if any component missing
+const _RC = window.Recharts || {};
+const LineChart = _RC.LineChart || (() => null);
+const Line = _RC.Line || (() => null);
+const XAxis = _RC.XAxis || (() => null);
+const YAxis = _RC.YAxis || (() => null);
+const CartesianGrid = _RC.CartesianGrid || (() => null);
+const Tooltip = _RC.Tooltip || (() => null);
+const ResponsiveContainer = _RC.ResponsiveContainer || (({children,width,height}) => React.createElement('div',{style:{width:width||'100%',height:height||200}},children));
+const BarChart = _RC.BarChart || (() => null);
+const Bar = _RC.Bar || (() => null);
+const PieChart = _RC.PieChart || (({children,width,height}) => React.createElement('svg',{width:width||200,height:height||200},children));
+const Pie = _RC.Pie || (() => null);
+const Cell = _RC.Cell || (() => null);
+
+// ─── AUTH CONTEXT ────────────────────────────────────────────────────────────
+const AuthContext = createContext(null);
+const API_BASE = 'http://localhost:8000/api';
+
+function useAuth() { return useContext(AuthContext); }
+
+// ─── API SERVICE ─────────────────────────────────────────────────────────────
+const api = {
+  get token() { return localStorage.getItem('arogyamitra_token'); },
+  headers() {
+    const h = { 'Content-Type': 'application/json' };
+    if (this.token) h['Authorization'] = `Bearer ${this.token}`;
+    return h;
+  },
+  async request(method, path, body) {
+    try {
+      const opts = { method, headers: this.headers() };
+      if (body) {
+        if (body instanceof URLSearchParams) {
+          opts.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+          opts.body = body;
+        } else {
+          opts.body = JSON.stringify(body);
+        }
+      }
+      const res = await fetch(`${API_BASE}${path}`, opts);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Request failed');
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  },
+  get: (p) => api.request('GET', p),
+  post: (p, b) => api.request('POST', p, b),
+  put: (p, b) => api.request('PUT', p, b),
+};
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+let _setToast;
+function Toast() {
+  const [toast, setToast] = useState(null);
+  _setToast = setToast;
+  useEffect(() => {
+    if (toast) { const t = setTimeout(() => setToast(null), 3500); return () => clearTimeout(t); }
+  }, [toast]);
+  if (!toast) return null;
+  return <div className={`toast toast-${toast.type}`}>{toast.msg}</div>;
+}
+const showToast = (msg, type='success') => _setToast && _setToast({msg, type});
+
+// ─── ICONS ───────────────────────────────────────────────────────────────────
+const Icon = ({ name, size=20, color='currentColor' }) => {
+  const icons = {
+    dashboard: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>,
+    workout: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><path d="M6.5 6.5h11"/><path d="M6.5 17.5h11"/><path d="M3 8.5h2a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5H3"/><path d="M21 8.5h-2a.5.5 0 0 0-.5.5v6a.5.5 0 0 0 .5.5h2"/></svg>,
+    nutrition: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 4-3 8-7 13C8 17 5 13 5 9a7 7 0 0 1 7-7z"/></svg>,
+    progress: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>,
+    chat: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+    health: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
+    profile: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+    logout: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
+    fire: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>,
+    star: <svg width={size} height={size} fill={color} stroke={color} strokeWidth="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+    zap: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+    target: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
+    send: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>,
+    bot: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="9" cy="16" r="1" fill={color}/><circle cx="15" cy="16" r="1" fill={color}/></svg>,
+    menu: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>,
+    close: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+    refresh: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>,
+    check: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>,
+    award: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>,
+    calendar: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+    trending: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+    scale: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><path d="M12 3c0 0-6 3-6 8s6 10 6 10 6-5 6-10-6-8-6-8z"/><path d="M12 12H6"/><path d="M18 12h-6"/></svg>,
+  };
+  return icons[name] || <span>?</span>;
+};
+
+// ─── LOADING SPINNER ─────────────────────────────────────────────────────────
+function Spinner({ size=40 }) {
+  return (
+    <div style={{display:'flex',justifyContent:'center',alignItems:'center',padding:'40px'}}>
+      <svg className="spinner" width={size} height={size} viewBox="0 0 50 50">
+        <circle cx="25" cy="25" r="20" fill="none" stroke="var(--accent-primary)" strokeWidth="4" strokeDasharray="31.4 94.2"/>
+      </svg>
+    </div>
+  );
+}
+
+// ─── AUTH PROVIDER ────────────────────────────────────────────────────────────
+function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem('arogyamitra_token');
+    if (token) {
+      api.get('/auth/me').then(u => setUser(u)).catch(() => localStorage.removeItem('arogyamitra_token')).finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const login = async (username, password) => {
+    const fd = new URLSearchParams();
+    fd.append('username', username);
+    fd.append('password', password);
+    const data = await api.request('POST', '/auth/login', fd);
+    localStorage.setItem('arogyamitra_token', data.access_token);
+    const me = await api.get('/auth/me');
+    setUser(me);
+    return me;
+  };
+
+  const register = async (formData) => {
+    const data = await api.post('/auth/register', formData);
+    localStorage.setItem('arogyamitra_token', data.access_token);
+    const me = await api.get('/auth/me');
+    setUser(me);
+    return me;
+  };
+
+  const logout = () => {
+    localStorage.removeItem('arogyamitra_token');
+    setUser(null);
+  };
+
+  if (loading) return (
+    <div style={{display:'flex',justifyContent:'center',alignItems:'center',height:'100vh',flexDirection:'column',gap:'16px'}}>
+      <div style={{fontSize:'2rem'}}>🌿</div>
+      <Spinner />
+      <p style={{color:'var(--text-secondary)'}}>Loading ArogyaMitra...</p>
+    </div>
+  );
+
+  return <AuthContext.Provider value={{user, login, register, logout}}>{children}</AuthContext.Provider>;
+}
+
+// ─── LOGIN PAGE ───────────────────────────────────────────────────────────────
+function LoginPage({ onSwitch }) {
+  const { login } = useAuth();
+  const [form, setForm] = useState({ username: '', password: '' });
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await login(form.username, form.password);
+      showToast('Welcome back! 💪');
+    } catch(err) {
+      showToast(err.message || 'Login failed', 'error');
+    } finally { setLoading(false); }
+  };
+
+  return (
+    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',padding:'20px',position:'relative'}}>
+      <div className="mesh-bg"/>
+      <div style={{position:'relative',zIndex:1,width:'100%',maxWidth:'420px'}} className="fadeIn">
+        <div style={{textAlign:'center',marginBottom:'40px'}}>
+          <div style={{fontSize:'3rem',marginBottom:'12px'}}>🌿</div>
+          <h1 style={{fontFamily:'var(--font-display)',fontSize:'2.2rem',fontWeight:'800',background:'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',marginBottom:'8px'}}>ArogyaMitra</h1>
+          <p style={{color:'var(--text-secondary)',fontSize:'0.95rem'}}>Your AI-Powered Fitness Companion</p>
+        </div>
+        <div className="card">
+          <h2 style={{fontFamily:'var(--font-display)',fontSize:'1.4rem',fontWeight:'700',marginBottom:'24px',color:'var(--text-primary)'}}>Welcome Back</h2>
+          <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',gap:'16px'}}>
+            <div>
+              <label className="label">Username or Email</label>
+              <input className="input-field" type="text" placeholder="Enter username" value={form.username} onChange={e=>setForm({...form,username:e.target.value})} required/>
+            </div>
+            <div>
+              <label className="label">Password</label>
+              <input className="input-field" type="password" placeholder="Enter password" value={form.password} onChange={e=>setForm({...form,password:e.target.value})} required/>
+            </div>
+            <button className="btn-primary" type="submit" disabled={loading} style={{marginTop:'8px',width:'100%',padding:'14px'}}>
+              {loading ? '⏳ Signing in...' : '🚀 Sign In'}
+            </button>
+          </form>
+          <p style={{textAlign:'center',marginTop:'20px',color:'var(--text-secondary)',fontSize:'0.9rem'}}>
+            Don't have an account?{' '}
+            <span onClick={onSwitch} style={{color:'var(--accent-primary)',cursor:'pointer',fontWeight:'600'}}>Register here</span>
+          </p>
+          <div style={{marginTop:'20px',padding:'12px',background:'rgba(0,153,255,0.08)',borderRadius:'8px',border:'1px solid var(--border-blue)'}}>
+            <p style={{fontSize:'0.8rem',color:'var(--text-secondary)',textAlign:'center'}}>
+              💡 Demo: Register first, then login with your credentials
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── REGISTER PAGE ────────────────────────────────────────────────────────────
+function RegisterPage({ onSwitch }) {
+  const { register } = useAuth();
+  const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    email: '', username: '', password: '', full_name: '',
+    age: '', gender: 'male', height: '', weight: '',
+    fitness_level: 'beginner', fitness_goal: 'maintenance',
+    workout_preference: 'home', diet_preference: 'vegetarian'
+  });
+
+  const update = (k, v) => setForm(f => ({...f, [k]: v}));
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const payload = {...form, age: form.age ? parseInt(form.age) : null, height: form.height ? parseFloat(form.height) : null, weight: form.weight ? parseFloat(form.weight) : null};
+      await register(payload);
+      showToast('Account created! Welcome to ArogyaMitra 🌿');
+    } catch(err) {
+      showToast(err.message || 'Registration failed', 'error');
+    } finally { setLoading(false); }
+  };
+
+  return (
+    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',padding:'20px',position:'relative'}}>
+      <div className="mesh-bg"/>
+      <div style={{position:'relative',zIndex:1,width:'100%',maxWidth:'480px'}} className="fadeIn">
+        <div style={{textAlign:'center',marginBottom:'32px'}}>
+          <div style={{fontSize:'3rem',marginBottom:'12px'}}>🌿</div>
+          <h1 style={{fontFamily:'var(--font-display)',fontSize:'2rem',fontWeight:'800',background:'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>Join ArogyaMitra</h1>
+        </div>
+
+        <div style={{display:'flex',gap:'8px',marginBottom:'24px'}}>
+          {[1,2].map(s=>(
+            <div key={s} style={{flex:1,height:'4px',borderRadius:'2px',background:step>=s?'linear-gradient(90deg,var(--accent-primary),var(--accent-secondary))':'rgba(255,255,255,0.1)',transition:'all 0.3s'}}/>
+          ))}
+        </div>
+
+        <div className="card">
+          {step === 1 ? (
+            <>
+              <h2 style={{fontFamily:'var(--font-display)',fontSize:'1.3rem',fontWeight:'700',marginBottom:'20px'}}>Basic Information</h2>
+              <div style={{display:'flex',flexDirection:'column',gap:'14px'}}>
+                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px'}}>
+                  <div><label className="label">Full Name</label><input className="input-field" placeholder="John Doe" value={form.full_name} onChange={e=>update('full_name',e.target.value)}/></div>
+                  <div><label className="label">Username</label><input className="input-field" placeholder="johndoe" value={form.username} onChange={e=>update('username',e.target.value)}/></div>
+                </div>
+                <div><label className="label">Email</label><input className="input-field" type="email" placeholder="john@email.com" value={form.email} onChange={e=>update('email',e.target.value)}/></div>
+                <div><label className="label">Password</label><input className="input-field" type="password" placeholder="Min 8 characters" value={form.password} onChange={e=>update('password',e.target.value)}/></div>
+                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'12px'}}>
+                  <div><label className="label">Age</label><input className="input-field" type="number" placeholder="25" value={form.age} onChange={e=>update('age',e.target.value)}/></div>
+                  <div><label className="label">Height (cm)</label><input className="input-field" type="number" placeholder="175" value={form.height} onChange={e=>update('height',e.target.value)}/></div>
+                  <div><label className="label">Weight (kg)</label><input className="input-field" type="number" placeholder="70" value={form.weight} onChange={e=>update('weight',e.target.value)}/></div>
+                </div>
+                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px'}}>
+                  <div><label className="label">Gender</label>
+                    <select className="input-field" value={form.gender} onChange={e=>update('gender',e.target.value)}>
+                      <option value="male">Male</option><option value="female">Female</option><option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div><label className="label">Fitness Level</label>
+                    <select className="input-field" value={form.fitness_level} onChange={e=>update('fitness_level',e.target.value)}>
+                      <option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <button className="btn-primary" onClick={()=>setStep(2)} style={{width:'100%',marginTop:'20px',padding:'14px'}}>Next Step →</button>
+            </>
+          ) : (
+            <>
+              <h2 style={{fontFamily:'var(--font-display)',fontSize:'1.3rem',fontWeight:'700',marginBottom:'20px'}}>Your Fitness Goals</h2>
+              <div style={{display:'flex',flexDirection:'column',gap:'14px'}}>
+                <div>
+                  <label className="label">Fitness Goal</label>
+                  <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
+                    {['weight_loss','weight_gain','muscle_gain','maintenance','endurance'].map(g=>(
+                      <div key={g} onClick={()=>update('fitness_goal',g)} style={{padding:'10px 14px',border:`1px solid ${form.fitness_goal===g?'var(--accent-primary)':'var(--border)'}`,borderRadius:'8px',cursor:'pointer',background:form.fitness_goal===g?'var(--accent-glow)':'transparent',transition:'all 0.2s',fontSize:'0.85rem',fontWeight:'500',textTransform:'capitalize'}}>
+                        {g.replace('_',' ')}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="label">Workout Preference</label>
+                  <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'8px'}}>
+                    {['home','gym','outdoor'].map(w=>(
+                      <div key={w} onClick={()=>update('workout_preference',w)} style={{padding:'10px',border:`1px solid ${form.workout_preference===w?'var(--accent-primary)':'var(--border)'}`,borderRadius:'8px',cursor:'pointer',background:form.workout_preference===w?'var(--accent-glow)':'transparent',textAlign:'center',transition:'all 0.2s',fontSize:'0.85rem',fontWeight:'500',textTransform:'capitalize'}}>
+                        {w==='home'?'🏠 ':w==='gym'?'🏋️ ':'🌳 '}{w}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="label">Diet Preference</label>
+                  <select className="input-field" value={form.diet_preference} onChange={e=>update('diet_preference',e.target.value)}>
+                    <option value="vegetarian">🥗 Vegetarian</option>
+                    <option value="vegan">🌱 Vegan</option>
+                    <option value="non_vegetarian">🥩 Non-Vegetarian</option>
+                    <option value="keto">🥑 Keto</option>
+                    <option value="paleo">🦴 Paleo</option>
+                  </select>
+                </div>
+              </div>
+              <div style={{display:'flex',gap:'12px',marginTop:'20px'}}>
+                <button className="btn-outline" onClick={()=>setStep(1)} style={{flex:1,padding:'14px'}}>← Back</button>
+                <button className="btn-primary" onClick={handleSubmit} disabled={loading} style={{flex:2,padding:'14px'}}>
+                  {loading ? '⏳ Creating account...' : '🚀 Start My Journey'}
+                </button>
+              </div>
+            </>
+          )}
+          <p style={{textAlign:'center',marginTop:'20px',color:'var(--text-secondary)',fontSize:'0.9rem'}}>
+            Already have an account?{' '}
+            <span onClick={onSwitch} style={{color:'var(--accent-primary)',cursor:'pointer',fontWeight:'600'}}>Sign in</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── SIDEBAR ─────────────────────────────────────────────────────────────────
+const NAV_ITEMS = [
+  { id: 'dashboard', icon: 'dashboard', label: 'Dashboard' },
+  { id: 'workout', icon: 'workout', label: 'Workout Plans' },
+  { id: 'nutrition', icon: 'nutrition', label: 'Nutrition' },
+  { id: 'progress', icon: 'progress', label: 'Progress' },
+  { id: 'aromi', icon: 'chat', label: 'AROMI Coach' },
+  { id: 'health', icon: 'health', label: 'Health Check' },
+  { id: 'profile', icon: 'profile', label: 'Profile' },
+];
+
+function Sidebar({ active, onNav, collapsed, onCollapse }) {
+  const { user, logout } = useAuth();
+  return (
+    <div style={{
+      width: collapsed ? '72px' : '240px',
+      minHeight:'100vh',
+      background: 'linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%)',
+      borderRight: '1px solid var(--border)',
+      display:'flex',flexDirection:'column',
+      transition:'width 0.3s ease',
+      position:'sticky',top:0,flexShrink:0,
+      overflow:'hidden'
+    }}>
+      <div style={{padding: collapsed?'20px 16px':'20px 20px',display:'flex',alignItems:'center',gap:'12px',borderBottom:'1px solid var(--border)',cursor:'pointer'}} onClick={onCollapse}>
+        <span style={{fontSize:'1.6rem',flexShrink:0}}>🌿</span>
+        {!collapsed && <span style={{fontFamily:'var(--font-display)',fontWeight:'800',fontSize:'1.1rem',background:'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',whiteSpace:'nowrap'}}>ArogyaMitra</span>}
+      </div>
+
+      <nav style={{flex:1,padding:'16px 12px',display:'flex',flexDirection:'column',gap:'4px'}}>
+        {NAV_ITEMS.map(item => (
+          <div key={item.id} onClick={()=>onNav(item.id)} style={{
+            display:'flex',alignItems:'center',gap:'12px',
+            padding: collapsed?'12px':'12px 14px',
+            borderRadius:'10px',cursor:'pointer',
+            background: active===item.id ? 'linear-gradient(135deg, rgba(0,212,170,0.15), rgba(0,153,255,0.1))' : 'transparent',
+            border: active===item.id ? '1px solid rgba(0,212,170,0.25)' : '1px solid transparent',
+            color: active===item.id ? 'var(--accent-primary)' : 'var(--text-secondary)',
+            transition:'all 0.2s',
+            justifyContent: collapsed ? 'center' : 'flex-start'
+          }}>
+            <Icon name={item.icon} size={18} color={active===item.id?'var(--accent-primary)':'var(--text-secondary)'}/>
+            {!collapsed && <span style={{fontSize:'0.9rem',fontWeight:active===item.id?'600':'400',whiteSpace:'nowrap'}}>{item.label}</span>}
+          </div>
+        ))}
+      </nav>
+
+      <div style={{padding:'16px 12px',borderTop:'1px solid var(--border)'}}>
+        {!collapsed && (
+          <div style={{display:'flex',alignItems:'center',gap:'10px',marginBottom:'12px',padding:'10px',background:'rgba(255,255,255,0.03)',borderRadius:'10px'}}>
+            <div style={{width:'36px',height:'36px',borderRadius:'50%',background:'linear-gradient(135deg,var(--accent-primary),var(--accent-secondary))',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:'700',fontSize:'0.9rem',flexShrink:0}}>
+              {user?.full_name?.[0] || 'U'}
+            </div>
+            <div style={{minWidth:0}}>
+              <div style={{fontSize:'0.85rem',fontWeight:'600',truncate:true,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{user?.full_name}</div>
+              <div style={{fontSize:'0.75rem',color:'var(--text-muted)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{user?.email}</div>
+            </div>
+          </div>
+        )}
+        <div onClick={logout} style={{display:'flex',alignItems:'center',gap:'12px',padding:collapsed?'12px':'12px 14px',borderRadius:'10px',cursor:'pointer',color:'var(--danger)',transition:'all 0.2s',justifyContent:collapsed?'center':'flex-start'}}
+          onMouseEnter={e=>e.currentTarget.style.background='rgba(255,71,87,0.1)'}
+          onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+          <Icon name="logout" size={18} color="var(--danger)"/>
+          {!collapsed && <span style={{fontSize:'0.9rem'}}>Sign Out</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── STAT CARD ────────────────────────────────────────────────────────────────
+function StatCard({ icon, label, value, sub, color='var(--accent-primary)', trend }) {
+  return (
+    <div className="card" style={{display:'flex',flexDirection:'column',gap:'12px',position:'relative',overflow:'hidden'}}>
+      <div style={{position:'absolute',top:0,right:0,width:'80px',height:'80px',background:`radial-gradient(circle, ${color}20, transparent)`,borderRadius:'0 16px 0 80px'}}/>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+        <span style={{fontSize:'0.8rem',color:'var(--text-secondary)',textTransform:'uppercase',letterSpacing:'0.5px',fontWeight:'500'}}>{label}</span>
+        <span style={{fontSize:'1.3rem'}}>{icon}</span>
+      </div>
+      <div>
+        <div style={{fontSize:'1.8rem',fontFamily:'var(--font-display)',fontWeight:'800',color}}>{value}</div>
+        {sub && <div style={{fontSize:'0.8rem',color:'var(--text-muted)',marginTop:'4px'}}>{sub}</div>}
+      </div>
+      {trend && <div style={{fontSize:'0.75rem',color:'var(--accent-primary)',fontWeight:'500'}}>↑ {trend}</div>}
+    </div>
+  );
+}
+
+// ─── DASHBOARD ────────────────────────────────────────────────────────────────
+function Dashboard() {
+  const { user } = useAuth();
+  const [stats, setStats] = useState(null);
+  const [motivation, setMotivation] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      api.get('/users/dashboard-stats').catch(()=>null),
+      api.get('/ai-coach/motivate').catch(()=>null)
+    ]).then(([s, m]) => {
+      setStats(s);
+      setMotivation(m?.motivation || '💪 Ready to transform your life? Let\'s get moving today!');
+      setLoading(false);
+    });
+  }, []);
+
+  const bmi = stats?.bmi;
+  const bmiCategory = bmi ? (bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese') : null;
+  const bmiColor = bmi ? (bmi < 18.5 ? 'var(--warning)' : bmi < 25 ? 'var(--success)' : bmi < 30 ? 'var(--warning)' : 'var(--danger)') : 'var(--accent-primary)';
+
+  return (
+    <div className="fadeIn" style={{padding:'32px',maxWidth:'1200px'}}>
+      {/* Welcome Header */}
+      <div style={{marginBottom:'32px'}}>
+        <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'8px'}}>
+          <h1 style={{fontFamily:'var(--font-display)',fontSize:'2rem',fontWeight:'800'}}>
+            Welcome back, <span style={{color:'var(--accent-primary)'}}>{user?.full_name?.split(' ')[0]}</span> 👋
+          </h1>
+        </div>
+        <p style={{color:'var(--text-secondary)'}}>Here's your fitness overview for today</p>
+      </div>
+
+      {/* Motivation Banner */}
+      {motivation && (
+        <div style={{background:'linear-gradient(135deg, rgba(0,212,170,0.1), rgba(0,153,255,0.1))',border:'1px solid var(--border)',borderRadius:'16px',padding:'20px 24px',marginBottom:'28px',display:'flex',alignItems:'center',gap:'16px'}}>
+          <span style={{fontSize:'2rem',flexShrink:0}}>🤖</span>
+          <div>
+            <div style={{fontSize:'0.75rem',color:'var(--accent-primary)',fontWeight:'600',marginBottom:'4px',textTransform:'uppercase',letterSpacing:'0.5px'}}>AROMI Daily Motivation</div>
+            <p style={{color:'var(--text-primary)',fontSize:'0.95rem',lineHeight:'1.5'}}>{motivation}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Stats Grid */}
+      {loading ? <Spinner/> : (
+        <>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(200px, 1fr))',gap:'16px',marginBottom:'28px'}}>
+            <StatCard icon="🔥" label="Workouts This Week" value={stats?.workouts_this_week ?? 0} sub="out of 5 planned" color="var(--warning)"/>
+            <StatCard icon="⚡" label="Calories Burned" value={`${stats?.total_calories_burned ?? 0}`} sub="this week" color="var(--accent-secondary)"/>
+            <StatCard icon="⚖️" label="Current Weight" value={stats?.current_weight ? `${stats.current_weight} kg` : 'Not set'} sub="update in progress" color="var(--accent-primary)"/>
+            {bmi && <StatCard icon="💪" label="BMI" value={bmi} sub={bmiCategory} color={bmiColor}/>}
+          </div>
+
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'20px',marginBottom:'28px'}}>
+            {/* Plan Status */}
+            <div className="card">
+              <h3 style={{fontFamily:'var(--font-display)',fontWeight:'700',marginBottom:'16px',fontSize:'1.1rem'}}>Your Active Plans</h3>
+              <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
+                <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px',background:'rgba(255,255,255,0.03)',borderRadius:'10px'}}>
+                  <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
+                    <span style={{fontSize:'1.2rem'}}>🏋️</span>
+                    <span style={{fontSize:'0.9rem',fontWeight:'500'}}>Workout Plan</span>
+                  </div>
+                  <span className={'badge ' + (stats?.has_workout_plan?'badge-green':'badge-red')}>
+                    {stats?.has_workout_plan ? '✓ Active' : '✗ None'}
+                  </span>
+                </div>
+                <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px',background:'rgba(255,255,255,0.03)',borderRadius:'10px'}}>
+                  <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
+                    <span style={{fontSize:'1.2rem'}}>🥗</span>
+                    <span style={{fontSize:'0.9rem',fontWeight:'500'}}>Nutrition Plan</span>
+                  </div>
+                  <span className={'badge ' + (stats?.has_nutrition_plan?'badge-green':'badge-red')}>
+                    {stats?.has_nutrition_plan ? '✓ Active' : '✗ None'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Stats */}
+            <div className="card">
+              <h3 style={{fontFamily:'var(--font-display)',fontWeight:'700',marginBottom:'16px',fontSize:'1.1rem'}}>Your Profile</h3>
+              <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
+                {[
+                  ['🎯 Goal', user?.fitness_goal?.replace(/_/g,' ')],
+                  ['🏃 Level', user?.fitness_level],
+                  ['🏠 Workout', user?.workout_preference],
+                  ['🥗 Diet', user?.diet_preference?.replace(/_/g,' ')],
+                ].map(([k,v])=>(
+                  <div key={k} style={{display:'flex',justifyContent:'space-between',padding:'8px 0',borderBottom:'1px solid rgba(255,255,255,0.05)',fontSize:'0.9rem'}}>
+                    <span style={{color:'var(--text-secondary)'}}>{k}</span>
+                    <span style={{fontWeight:'500',textTransform:'capitalize'}}>{v || 'Not set'}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Feature Cards */}
+      <h3 style={{fontFamily:'var(--font-display)',fontWeight:'700',fontSize:'1.2rem',marginBottom:'16px'}}>Quick Actions</h3>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(200px, 1fr))',gap:'16px'}}>
+        {[
+          { icon:'🏋️', title:'Generate Workout', desc:'AI-powered 7-day plan', color:'rgba(0,212,170,0.1)', border:'rgba(0,212,170,0.3)' },
+          { icon:'🥗', title:'Nutrition Plan', desc:'Personalized meal plan', color:'rgba(0,153,255,0.1)', border:'rgba(0,153,255,0.3)' },
+          { icon:'🤖', title:'Chat with AROMI', desc:'Your AI wellness coach', color:'rgba(255,165,0,0.1)', border:'rgba(255,165,0,0.3)' },
+          { icon:'❤️', title:'Health Check', desc:'Assess your health', color:'rgba(255,71,87,0.1)', border:'rgba(255,71,87,0.3)' },
+        ].map(c=>(
+          <div key={c.title} className="card" style={{cursor:'pointer',background:c.color,border:`1px solid ${c.border}`,textAlign:'center',padding:'24px 16px'}}
+            onMouseEnter={e=>e.currentTarget.style.transform='translateY(-4px)'}
+            onMouseLeave={e=>e.currentTarget.style.transform='translateY(0)'}>
+            <div style={{fontSize:'2rem',marginBottom:'8px'}}>{c.icon}</div>
+            <div style={{fontWeight:'600',fontSize:'0.95rem',marginBottom:'4px'}}>{c.title}</div>
+            <div style={{fontSize:'0.8rem',color:'var(--text-secondary)'}}>{c.desc}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── WORKOUT PAGE ─────────────────────────────────────────────────────────────
+function WorkoutPage() {
+  const [plan, setPlan] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
+  const [selectedDay, setSelectedDay] = useState(0);
+
+  useEffect(() => {
+    api.get('/workouts/current').then(d=>setPlan(d.plan)).catch(()=>{}).finally(()=>setFetching(false));
+  }, []);
+
+  const generate = async () => {
+    setLoading(true);
+    try {
+      const data = await api.post('/workouts/generate', {});
+      setPlan(data.plan);
+      showToast('🏋️ Workout plan generated!');
+    } catch(e) {
+      showToast(e.message || 'Failed to generate', 'error');
+    } finally { setLoading(false); }
+  };
+
+  return (
+    <div className="fadeIn" style={{padding:'32px',maxWidth:'1100px'}}>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'28px'}}>
+        <div>
+          <h1 style={{fontFamily:'var(--font-display)',fontSize:'1.8rem',fontWeight:'800',marginBottom:'4px'}}>Workout Plans</h1>
+          <p style={{color:'var(--text-secondary)'}}>AI-generated personalized training programs</p>
+        </div>
+        <button className="btn-primary" onClick={generate} disabled={loading} style={{display:'flex',alignItems:'center',gap:'8px'}}>
+          {loading ? <><span className="spinner" style={{display:'inline-block',width:16,height:16,border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'white',borderRadius:'50%'}}/> Generating...</> : <><Icon name="refresh" size={16} color="white"/> Generate New Plan</>}
+        </button>
+      </div>
+
+      {fetching ? <Spinner/> : !plan ? (
+        <div style={{textAlign:'center',padding:'80px 20px'}}>
+          <div style={{fontSize:'4rem',marginBottom:'16px'}}>🏋️</div>
+          <h3 style={{fontFamily:'var(--font-display)',fontSize:'1.4rem',fontWeight:'700',marginBottom:'8px'}}>No Workout Plan Yet</h3>
+          <p style={{color:'var(--text-secondary)',marginBottom:'24px'}}>Generate your first AI-powered workout plan</p>
+          <button className="btn-primary" onClick={generate} disabled={loading} style={{padding:'14px 32px'}}>
+            {loading ? 'Generating...' : '✨ Generate My Workout Plan'}
+          </button>
+        </div>
+      ) : (
+        <>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:'12px',marginBottom:'24px'}}>
+            <div className="card" style={{textAlign:'center'}}>
+              <div style={{fontSize:'1.5rem',marginBottom:'4px'}}>🎯</div>
+              <div style={{fontSize:'0.75rem',color:'var(--text-secondary)',textTransform:'uppercase',marginBottom:'4px'}}>Goal</div>
+              <div style={{fontSize:'0.9rem',fontWeight:'600',textTransform:'capitalize'}}>{plan.goal?.replace(/_/g,' ')}</div>
+            </div>
+            <div className="card" style={{textAlign:'center'}}>
+              <div style={{fontSize:'1.5rem',marginBottom:'4px'}}>📅</div>
+              <div style={{fontSize:'0.75rem',color:'var(--text-secondary)',textTransform:'uppercase',marginBottom:'4px'}}>Frequency</div>
+              <div style={{fontSize:'0.9rem',fontWeight:'600'}}>{plan.weekly_frequency} days/week</div>
+            </div>
+            <div className="card" style={{textAlign:'center'}}>
+              <div style={{fontSize:'1.5rem',marginBottom:'4px'}}>🔥</div>
+              <div style={{fontSize:'0.75rem',color:'var(--text-secondary)',textTransform:'uppercase',marginBottom:'4px'}}>Weekly Burn</div>
+              <div style={{fontSize:'0.9rem',fontWeight:'600'}}>{plan.weekly_calories_burn} cal</div>
+            </div>
+          </div>
+
+          {/* Day Selector */}
+          {plan.days && (
+            <>
+              <div style={{display:'flex',gap:'8px',overflowX:'auto',paddingBottom:'8px',marginBottom:'20px'}}>
+                {plan.days.map((day, i) => (
+                  <button key={i} onClick={()=>setSelectedDay(i)} style={{
+                    padding:'8px 16px',
+                    borderRadius:'8px',
+                    border:`1px solid ${selectedDay===i?'var(--accent-primary)':'var(--border)'}`,
+                    background:selectedDay===i?'var(--accent-glow)':'transparent',
+                    color:selectedDay===i?'var(--accent-primary)':'var(--text-secondary)',
+                    cursor:'pointer',
+                    fontFamily:'var(--font-body)',
+                    fontWeight:'500',
+                    fontSize:'0.85rem',
+                    whiteSpace:'nowrap',
+                    transition:'all 0.2s'
+                  }}>
+                    {day.day}
+                  </button>
+                ))}
+              </div>
+
+              {plan.days[selectedDay] && (
+                <div className="card" style={{padding:'28px'}}>
+                  <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'20px'}}>
+                    <div>
+                      <h3 style={{fontFamily:'var(--font-display)',fontWeight:'700',fontSize:'1.3rem'}}>{plan.days[selectedDay].day}</h3>
+                      <p style={{color:'var(--accent-primary)',fontWeight:'600',fontSize:'0.9rem'}}>{plan.days[selectedDay].focus}</p>
+                    </div>
+                    <div style={{textAlign:'right'}}>
+                      <div style={{fontSize:'0.8rem',color:'var(--text-secondary)'}}>Duration</div>
+                      <div style={{fontWeight:'700',color:'var(--text-primary)'}}>{plan.days[selectedDay].duration_minutes} min</div>
+                    </div>
+                  </div>
+
+                  {plan.days[selectedDay].warmup && (
+                    <div style={{background:'rgba(255,165,0,0.08)',border:'1px solid rgba(255,165,0,0.2)',borderRadius:'10px',padding:'12px 16px',marginBottom:'16px'}}>
+                      <span style={{fontSize:'0.8rem',color:'var(--warning)',fontWeight:'600'}}>🔥 WARM-UP: </span>
+                      <span style={{fontSize:'0.9rem'}}>{plan.days[selectedDay].warmup}</span>
+                    </div>
+                  )}
+
+                  <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
+                    {(plan.days[selectedDay].exercises || []).map((ex, j) => (
+                      <div key={j} style={{background:'rgba(255,255,255,0.03)',border:'1px solid var(--border)',borderRadius:'12px',padding:'16px'}}>
+                        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'8px'}}>
+                          <h4 style={{fontWeight:'600',fontSize:'0.95rem'}}>{ex.name}</h4>
+                          <span className="badge badge-blue">{ex.muscle_group}</span>
+                        </div>
+                        <div style={{display:'flex',gap:'16px',fontSize:'0.85rem',color:'var(--text-secondary)',marginBottom:'6px'}}>
+                          <span>Sets: <strong style={{color:'var(--text-primary)'}}>{ex.sets}</strong></span>
+                          <span>Reps: <strong style={{color:'var(--text-primary)'}}>{ex.reps}</strong></span>
+                          <span>Rest: <strong style={{color:'var(--text-primary)'}}>{ex.rest_seconds}s</strong></span>
+                        </div>
+                        {ex.instructions && <p style={{fontSize:'0.82rem',color:'var(--text-muted)'}}>{ex.instructions}</p>}
+                      </div>
+                    ))}
+                  </div>
+
+                  {plan.days[selectedDay].cooldown && (
+                    <div style={{background:'rgba(0,153,255,0.08)',border:'1px solid rgba(0,153,255,0.2)',borderRadius:'10px',padding:'12px 16px',marginTop:'16px'}}>
+                      <span style={{fontSize:'0.8rem',color:'var(--accent-secondary)',fontWeight:'600'}}>🧊 COOL-DOWN: </span>
+                      <span style={{fontSize:'0.9rem'}}>{plan.days[selectedDay].cooldown}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+
+          {plan.tips && plan.tips.length > 0 && (
+            <div className="card" style={{marginTop:'20px'}}>
+              <h4 style={{fontFamily:'var(--font-display)',fontWeight:'700',marginBottom:'12px'}}>💡 Tips for Success</h4>
+              <ul style={{listStyle:'none',display:'flex',flexDirection:'column',gap:'8px'}}>
+                {plan.tips.map((tip,i)=>(
+                  <li key={i} style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'0.9rem',color:'var(--text-secondary)'}}>
+                    <Icon name="check" size={14} color="var(--accent-primary)"/> {tip}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── NUTRITION PAGE ───────────────────────────────────────────────────────────
+function NutritionPage() {
+  const [plan, setPlan] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
+  const [selectedDay, setSelectedDay] = useState(0);
+
+  useEffect(() => {
+    api.get('/nutrition/current').then(d=>setPlan(d)).catch(()=>{}).finally(()=>setFetching(false));
+  }, []);
+
+  const generate = async () => {
+    setLoading(true);
+    try {
+      const data = await api.post('/nutrition/generate', {});
+      setPlan(data);
+      showToast('🥗 Nutrition plan generated!');
+    } catch(e) {
+      showToast(e.message || 'Failed', 'error');
+    } finally { setLoading(false); }
+  };
+
+  const macros = plan?.macros || plan?.plan?.macros;
+  const calories = plan?.daily_calories || plan?.plan?.daily_calories;
+
+  const COLORS = ['#00d4aa', '#0099ff', '#ffa502'];
+
+  return (
+    <div className="fadeIn" style={{padding:'32px',maxWidth:'1100px'}}>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'28px'}}>
+        <div>
+          <h1 style={{fontFamily:'var(--font-display)',fontSize:'1.8rem',fontWeight:'800',marginBottom:'4px'}}>Nutrition Plans</h1>
+          <p style={{color:'var(--text-secondary)'}}>AI-curated meal plans for your dietary needs</p>
+        </div>
+        <button className="btn-primary" onClick={generate} disabled={loading}>
+          {loading ? 'Generating...' : '🥗 Generate Nutrition Plan'}
+        </button>
+      </div>
+
+      {fetching ? <Spinner/> : !plan ? (
+        <div style={{textAlign:'center',padding:'80px 20px'}}>
+          <div style={{fontSize:'4rem',marginBottom:'16px'}}>🥗</div>
+          <h3 style={{fontFamily:'var(--font-display)',fontSize:'1.4rem',fontWeight:'700',marginBottom:'8px'}}>No Nutrition Plan Yet</h3>
+          <p style={{color:'var(--text-secondary)',marginBottom:'24px'}}>Let AI create your perfect meal plan</p>
+          <button className="btn-primary" onClick={generate} style={{padding:'14px 32px'}}>✨ Generate My Nutrition Plan</button>
+        </div>
+      ) : (
+        <>
+          <div style={{display:'grid',gridTemplateColumns:'2fr 1fr',gap:'20px',marginBottom:'24px'}}>
+            <div className="card">
+              <h3 style={{fontFamily:'var(--font-display)',fontWeight:'700',marginBottom:'16px'}}>Daily Macros</h3>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'12px'}}>
+                {macros && [
+                  {label:'Protein',value:macros.protein,unit:'g',color:'#00d4aa'},
+                  {label:'Carbs',value:macros.carbs,unit:'g',color:'#0099ff'},
+                  {label:'Fat',value:macros.fat,unit:'g',color:'#ffa502'},
+                ].map(m=>(
+                  <div key={m.label} style={{textAlign:'center',padding:'16px',background:'rgba(255,255,255,0.03)',borderRadius:'10px',border:`1px solid ${m.color}30`}}>
+                    <div style={{fontSize:'1.5rem',fontFamily:'var(--font-display)',fontWeight:'800',color:m.color}}>{m.value}<span style={{fontSize:'0.8rem'}}>{m.unit}</span></div>
+                    <div style={{fontSize:'0.8rem',color:'var(--text-secondary)',marginTop:'4px'}}>{m.label}</div>
+                  </div>
+                ))}
+              </div>
+              {calories && <div style={{marginTop:'12px',textAlign:'center',padding:'12px',background:'rgba(0,212,170,0.05)',borderRadius:'8px',border:'1px solid var(--border)'}}>
+                <span style={{color:'var(--text-secondary)',fontSize:'0.85rem'}}>Daily Target: </span>
+                <span style={{color:'var(--accent-primary)',fontWeight:'700',fontSize:'1.1rem'}}>{calories} calories</span>
+              </div>}
+            </div>
+
+            {macros && (
+              <div className="card" style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+                <h3 style={{fontFamily:'var(--font-display)',fontWeight:'700',marginBottom:'16px',alignSelf:'flex-start'}}>Macro Split</h3>
+                <PieChart width={140} height={140}>
+                  <Pie data={[{value:macros.protein},{value:macros.carbs},{value:macros.fat}]} cx={65} cy={65} innerRadius={35} outerRadius={60} dataKey="value">
+                    {COLORS.map((color,i)=><Cell key={i} fill={color}/>)}
+                  </Pie>
+                </PieChart>
+                <div style={{display:'flex',gap:'12px',marginTop:'8px'}}>
+                  {['Protein','Carbs','Fat'].map((l,i)=>(
+                    <div key={l} style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'0.75rem'}}>
+                      <div style={{width:'8px',height:'8px',borderRadius:'50%',background:COLORS[i]}}/>
+                      {l}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Days */}
+          {plan.plan?.days && (
+            <>
+              <div style={{display:'flex',gap:'8px',overflowX:'auto',paddingBottom:'8px',marginBottom:'20px'}}>
+                {plan.plan.days.map((day, i)=>(
+                  <button key={i} onClick={()=>setSelectedDay(i)} style={{
+                    padding:'8px 16px',borderRadius:'8px',
+                    border:`1px solid ${selectedDay===i?'var(--accent-primary)':'var(--border)'}`,
+                    background:selectedDay===i?'var(--accent-glow)':'transparent',
+                    color:selectedDay===i?'var(--accent-primary)':'var(--text-secondary)',
+                    cursor:'pointer',fontFamily:'var(--font-body)',fontWeight:'500',fontSize:'0.85rem',whiteSpace:'nowrap',transition:'all 0.2s'
+                  }}>{day.day}</button>
+                ))}
+              </div>
+              {plan.plan.days[selectedDay] && (
+                <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
+                  {(plan.plan.days[selectedDay].meals || []).map((meal, j)=>(
+                    <div key={j} className="card" style={{border:`1px solid ${meal.type==='breakfast'?'rgba(255,165,0,0.2)':meal.type==='lunch'?'rgba(0,212,170,0.2)':meal.type==='dinner'?'rgba(0,153,255,0.2)':'rgba(255,255,255,0.1)'}`}}>
+                      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'8px'}}>
+                        <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
+                          <span style={{fontSize:'1.2rem'}}>{meal.type==='breakfast'?'🌅':meal.type==='lunch'?'☀️':meal.type==='dinner'?'🌙':'🍎'}</span>
+                          <div>
+                            <div style={{fontSize:'0.75rem',color:'var(--text-muted)',textTransform:'capitalize'}}>{meal.type}</div>
+                            <div style={{fontWeight:'600',fontSize:'0.95rem'}}>{meal.name}</div>
+                          </div>
+                        </div>
+                        <div style={{textAlign:'right'}}>
+                          <div style={{fontWeight:'700',color:'var(--accent-primary)'}}>{meal.calories} cal</div>
+                          <div style={{fontSize:'0.75rem',color:'var(--text-muted)'}}>P:{meal.protein}g C:{meal.carbs}g F:{meal.fat}g</div>
+                        </div>
+                      </div>
+                      {meal.ingredients && (
+                        <div style={{display:'flex',flexWrap:'wrap',gap:'6px',marginTop:'8px'}}>
+                          {meal.ingredients.map((ing,k)=>(
+                            <span key={k} style={{padding:'2px 8px',background:'rgba(255,255,255,0.05)',borderRadius:'20px',fontSize:'0.75rem',color:'var(--text-secondary)'}}>{ing}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── PROGRESS PAGE ────────────────────────────────────────────────────────────
+function ProgressPage() {
+  const [history, setHistory] = useState([]);
+  const [analytics, setAnalytics] = useState(null);
+  const [logForm, setLogForm] = useState({ weight:'', calories_burned:'', workout_completed:false, notes:'' });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    api.get('/progress/history').then(setHistory).catch(()=>{});
+    api.get('/progress/analytics').then(setAnalytics).catch(()=>{});
+  }, []);
+
+  const logProgress = async () => {
+    setLoading(true);
+    try {
+      await api.post('/progress/log', {
+        weight: logForm.weight ? parseFloat(logForm.weight) : null,
+        calories_burned: logForm.calories_burned ? parseFloat(logForm.calories_burned) : null,
+        workout_completed: logForm.workout_completed,
+        notes: logForm.notes || null
+      });
+      showToast('✅ Progress logged!');
+      const [h, a] = await Promise.all([api.get('/progress/history'), api.get('/progress/analytics')]);
+      setHistory(h); setAnalytics(a);
+      setLogForm({ weight:'', calories_burned:'', workout_completed:false, notes:'' });
+    } catch(e) {
+      showToast(e.message || 'Failed', 'error');
+    } finally { setLoading(false); }
+  };
+
+  const chartData = history.slice().reverse().map((r,i)=>({
+    day: `Day ${i+1}`,
+    weight: r.weight,
+    calories: r.calories_burned
+  })).filter(d=>d.weight||d.calories);
+
+  return (
+    <div className="fadeIn" style={{padding:'32px',maxWidth:'1100px'}}>
+      <h1 style={{fontFamily:'var(--font-display)',fontSize:'1.8rem',fontWeight:'800',marginBottom:'4px'}}>Progress Tracker</h1>
+      <p style={{color:'var(--text-secondary)',marginBottom:'28px'}}>Monitor your fitness journey over time</p>
+
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'20px',marginBottom:'28px'}}>
+        {/* Log Progress */}
+        <div className="card">
+          <h3 style={{fontFamily:'var(--font-display)',fontWeight:'700',marginBottom:'16px'}}>📝 Log Today's Progress</h3>
+          <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px'}}>
+              <div><label className="label">Weight (kg)</label><input className="input-field" type="number" placeholder="70.5" value={logForm.weight} onChange={e=>setLogForm({...logForm,weight:e.target.value})}/></div>
+              <div><label className="label">Calories Burned</label><input className="input-field" type="number" placeholder="350" value={logForm.calories_burned} onChange={e=>setLogForm({...logForm,calories_burned:e.target.value})}/></div>
+            </div>
+            <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
+              <input type="checkbox" id="workout_done" checked={logForm.workout_completed} onChange={e=>setLogForm({...logForm,workout_completed:e.target.checked})} style={{width:'18px',height:'18px',accentColor:'var(--accent-primary)'}}/>
+              <label htmlFor="workout_done" style={{fontSize:'0.9rem',cursor:'pointer'}}>Workout completed today ✅</label>
+            </div>
+            <div>
+              <label className="label">Notes</label>
+              <textarea className="input-field" placeholder="How did you feel today?" value={logForm.notes} onChange={e=>setLogForm({...logForm,notes:e.target.value})} rows={2} style={{resize:'vertical'}}/>
+            </div>
+            <button className="btn-primary" onClick={logProgress} disabled={loading}>{loading?'Saving...':'💾 Log Progress'}</button>
+          </div>
+        </div>
+
+        {/* AI Analysis */}
+        {analytics?.ai_analysis && (
+          <div className="card">
+            <h3 style={{fontFamily:'var(--font-display)',fontWeight:'700',marginBottom:'16px'}}>🤖 AI Analysis</h3>
+            <div style={{marginBottom:'12px'}}>
+              <span className={'badge ' + (analytics.ai_analysis.trend==='improving'?'badge-green':analytics.ai_analysis.trend==='declining'?'badge-red':'badge-blue')}>
+                {analytics.ai_analysis.trend==='improving'?'📈':(analytics.ai_analysis.trend==='declining'?'📉':'📊')} {analytics.ai_analysis.trend}
+              </span>
+            </div>
+            {analytics.ai_analysis.motivation_message && (
+              <p style={{fontSize:'0.9rem',color:'var(--accent-primary)',fontStyle:'italic',marginBottom:'12px',padding:'10px',background:'rgba(0,212,170,0.05)',borderRadius:'8px'}}>
+                "{analytics.ai_analysis.motivation_message}"
+              </p>
+            )}
+            {analytics.ai_analysis.key_insights && (
+              <div>
+                <div style={{fontSize:'0.8rem',color:'var(--text-secondary)',marginBottom:'6px',fontWeight:'600'}}>KEY INSIGHTS</div>
+                {analytics.ai_analysis.key_insights.slice(0,3).map((ins,i)=>(
+                  <div key={i} style={{display:'flex',gap:'6px',fontSize:'0.85rem',color:'var(--text-secondary)',marginBottom:'4px'}}>
+                    <Icon name="check" size={12} color="var(--accent-primary)"/> {ins}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Charts */}
+      {chartData.length > 0 && (
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'20px',marginBottom:'28px'}}>
+          <div className="card">
+            <h3 style={{fontFamily:'var(--font-display)',fontWeight:'700',marginBottom:'16px'}}>⚖️ Weight Trend</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)"/>
+                <XAxis dataKey="day" tick={{fill:'var(--text-muted)',fontSize:12}}/>
+                <YAxis tick={{fill:'var(--text-muted)',fontSize:12}} domain={['dataMin - 1', 'dataMax + 1']}/>
+                <Tooltip contentStyle={{background:'var(--bg-card)',border:'1px solid var(--border)',borderRadius:'8px'}} labelStyle={{color:'var(--text-primary)'}} itemStyle={{color:'var(--accent-primary)'}}/>
+                <Line type="monotone" dataKey="weight" stroke="var(--accent-primary)" strokeWidth={2} dot={{fill:'var(--accent-primary)',r:4}}/>
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="card">
+            <h3 style={{fontFamily:'var(--font-display)',fontWeight:'700',marginBottom:'16px'}}>🔥 Calories Burned</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)"/>
+                <XAxis dataKey="day" tick={{fill:'var(--text-muted)',fontSize:12}}/>
+                <YAxis tick={{fill:'var(--text-muted)',fontSize:12}}/>
+                <Tooltip contentStyle={{background:'var(--bg-card)',border:'1px solid var(--border)',borderRadius:'8px'}}/>
+                <Bar dataKey="calories" fill="var(--accent-secondary)" radius={[4,4,0,0]}/>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      {/* History */}
+      {history.length > 0 && (
+        <div className="card">
+          <h3 style={{fontFamily:'var(--font-display)',fontWeight:'700',marginBottom:'16px'}}>📋 Recent Records</h3>
+          <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
+            {history.slice(0,10).map((r,i)=>(
+              <div key={i} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px',background:'rgba(255,255,255,0.03)',borderRadius:'8px',fontSize:'0.9rem'}}>
+                <span style={{color:'var(--text-secondary)'}}>{new Date(r.recorded_at).toLocaleDateString()}</span>
+                <div style={{display:'flex',gap:'16px'}}>
+                  {r.weight && <span>⚖️ {r.weight}kg</span>}
+                  {r.calories_burned && <span>🔥 {r.calories_burned} cal</span>}
+                  {r.workout_completed && <span className="badge badge-green">✓ Workout</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── AROMI CHAT ───────────────────────────────────────────────────────────────
+function AromiChat() {
+  const { user } = useAuth();
+  const [messages, setMessages] = useState([
+    { role:'aromi', content:`Hey ${user?.full_name?.split(' ')[0] || 'there'}! 👋 I'm AROMI, your AI wellness coach. I'm here to help with your fitness journey, answer questions about workouts, nutrition, and health. What's on your mind today? 💪` }
+  ]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState('normal');
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior:'smooth' }); }, [messages]);
+
+  const send = async () => {
+    if (!input.trim() || loading) return;
+    const msg = input.trim();
+    setInput('');
+    setMessages(m=>[...m,{role:'user',content:msg}]);
+    setLoading(true);
+    try {
+      const data = await api.post('/chat/aromi', { message: msg, user_status: status });
+      setMessages(m=>[...m,{role:'aromi',content:data.response}]);
+    } catch(e) {
+      setMessages(m=>[...m,{role:'aromi',content:'Sorry, I had trouble connecting. Please make sure the backend is running with a valid Groq API key. 🔧'}]);
+    } finally { setLoading(false); }
+  };
+
+  const quickPrompts = [
+    "Generate a quick 20-min home workout",
+    "What should I eat before a workout?",
+    "I'm feeling tired and unmotivated today",
+    "How do I improve my sleep quality?",
+    "Tips for muscle gain diet"
+  ];
+
+  return (
+    <div className="fadeIn" style={{padding:'32px',maxWidth:'900px',height:'calc(100vh - 64px)',display:'flex',flexDirection:'column'}}>
+      <div style={{display:'flex',alignItems:'center',gap:'16px',marginBottom:'20px',flexShrink:0}}>
+        <div style={{width:'48px',height:'48px',borderRadius:'50%',background:'linear-gradient(135deg,var(--accent-primary),var(--accent-secondary))',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.5rem',animation:'glow 2s ease-in-out infinite'}}>🤖</div>
+        <div>
+          <h1 style={{fontFamily:'var(--font-display)',fontSize:'1.6rem',fontWeight:'800'}}>AROMI AI Coach</h1>
+          <p style={{color:'var(--accent-primary)',fontSize:'0.85rem',fontWeight:'500'}}>● Online · Your personal wellness companion</p>
+        </div>
+        <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:'8px'}}>
+          <label className="label" style={{margin:0}}>Status:</label>
+          <select className="input-field" value={status} onChange={e=>setStatus(e.target.value)} style={{width:'auto',padding:'6px 12px'}}>
+            <option value="normal">Normal</option>
+            <option value="traveling">Traveling</option>
+            <option value="recovering">Recovering</option>
+            <option value="busy">Busy</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Quick Prompts */}
+      <div style={{display:'flex',gap:'8px',overflowX:'auto',paddingBottom:'8px',marginBottom:'16px',flexShrink:0}}>
+        {quickPrompts.map((p,i)=>(
+          <button key={i} onClick={()=>{setInput(p);}} style={{
+            padding:'6px 14px',
+            borderRadius:'20px',
+            border:'1px solid var(--border)',
+            background:'rgba(255,255,255,0.03)',
+            color:'var(--text-secondary)',
+            fontSize:'0.8rem',
+            cursor:'pointer',
+            whiteSpace:'nowrap',
+            fontFamily:'var(--font-body)',
+            transition:'all 0.2s'
+          }}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--accent-primary)';e.currentTarget.style.color='var(--accent-primary)';}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--border)';e.currentTarget.style.color='var(--text-secondary)';}}>
+            {p}
+          </button>
+        ))}
+      </div>
+
+      {/* Messages */}
+      <div style={{flex:1,overflowY:'auto',display:'flex',flexDirection:'column',gap:'16px',paddingBottom:'16px'}}>
+        {messages.map((msg, i)=>(
+          <div key={i} style={{display:'flex',gap:'12px',justifyContent:msg.role==='user'?'flex-end':'flex-start',animation:'fadeIn 0.3s ease'}}>
+            {msg.role==='aromi' && <div style={{width:'36px',height:'36px',borderRadius:'50%',background:'linear-gradient(135deg,var(--accent-primary),var(--accent-secondary))',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:'1rem'}}>🤖</div>}
+            <div style={{
+              maxWidth:'75%',
+              padding:'14px 18px',
+              borderRadius:msg.role==='user'?'16px 4px 16px 16px':'4px 16px 16px 16px',
+              background:msg.role==='user'?'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))':'var(--bg-card)',
+              border:msg.role==='user'?'none':'1px solid var(--border)',
+              color:msg.role==='user'?'#000':'var(--text-primary)',
+              fontSize:'0.9rem',
+              lineHeight:'1.6'
+            }}>
+              {msg.content}
+            </div>
+            {msg.role==='user' && <div style={{width:'36px',height:'36px',borderRadius:'50%',background:'linear-gradient(135deg,#667eea,#764ba2)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontWeight:'700',fontSize:'0.9rem'}}>
+              {user?.full_name?.[0] || 'U'}
+            </div>}
+          </div>
+        ))}
+        {loading && (
+          <div style={{display:'flex',gap:'12px'}}>
+            <div style={{width:'36px',height:'36px',borderRadius:'50%',background:'linear-gradient(135deg,var(--accent-primary),var(--accent-secondary))',display:'flex',alignItems:'center',justifyContent:'center'}}>🤖</div>
+            <div style={{padding:'14px 18px',background:'var(--bg-card)',border:'1px solid var(--border)',borderRadius:'4px 16px 16px 16px'}}>
+              <div style={{display:'flex',gap:'4px'}}>
+                {[0,1,2].map(j=>(<div key={j} style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent-primary)',animation:`pulse 1.2s ease-in-out ${j*0.2}s infinite`}}/>))}
+              </div>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef}/>
+      </div>
+
+      {/* Input */}
+      <div style={{display:'flex',gap:'12px',background:'var(--bg-card)',border:'1px solid var(--border)',borderRadius:'14px',padding:'12px',flexShrink:0}}>
+        <input
+          className="input-field"
+          placeholder="Ask AROMI anything about fitness, nutrition, wellness..."
+          value={input}
+          onChange={e=>setInput(e.target.value)}
+          onKeyDown={e=>e.key==='Enter'&&!e.shiftKey&&send()}
+          style={{border:'none',background:'transparent',padding:'4px 8px'}}
+        />
+        <button className="btn-primary" onClick={send} disabled={loading||!input.trim()} style={{padding:'10px 20px',flexShrink:0}}>
+          <Icon name="send" size={16} color="white"/>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── HEALTH CHECK ─────────────────────────────────────────────────────────────
+function HealthCheck() {
+  const [form, setForm] = useState({ systolic_bp:'', diastolic_bp:'', resting_heart_rate:'', sleep_hours:'', stress_level:'5', water_intake_liters:'', smoking:false, alcohol_frequency:'none', medical_conditions:'' });
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    api.get('/health/latest').then(d=>{ if(d.bmi) setResult(d); }).catch(()=>{});
+  }, []);
+
+  const submit = async () => {
+    setLoading(true);
+    try {
+      const payload = {
+        systolic_bp: form.systolic_bp ? parseFloat(form.systolic_bp) : null,
+        diastolic_bp: form.diastolic_bp ? parseFloat(form.diastolic_bp) : null,
+        resting_heart_rate: form.resting_heart_rate ? parseFloat(form.resting_heart_rate) : null,
+        sleep_hours: form.sleep_hours ? parseFloat(form.sleep_hours) : null,
+        stress_level: form.stress_level ? parseInt(form.stress_level) : null,
+        water_intake_liters: form.water_intake_liters ? parseFloat(form.water_intake_liters) : null,
+        smoking: form.smoking,
+        alcohol_frequency: form.alcohol_frequency,
+        medical_conditions: form.medical_conditions || null
+      };
+      const data = await api.post('/health/assess', payload);
+      setResult(data);
+      showToast('✅ Health assessment complete!');
+    } catch(e) {
+      showToast(e.message || 'Failed', 'error');
+    } finally { setLoading(false); }
+  };
+
+  const scoreColor = result?.health_score >= 80 ? 'var(--success)' : result?.health_score >= 60 ? 'var(--warning)' : 'var(--danger)';
+  const scoreEmoji = result?.health_score >= 80 ? '😊' : result?.health_score >= 60 ? '😐' : '😟';
+
+  return (
+    <div className="fadeIn" style={{padding:'32px',maxWidth:'900px'}}>
+      <h1 style={{fontFamily:'var(--font-display)',fontSize:'1.8rem',fontWeight:'800',marginBottom:'4px'}}>Health Assessment</h1>
+      <p style={{color:'var(--text-secondary)',marginBottom:'28px'}}>Get a comprehensive health score and recommendations</p>
+
+      <div style={{display:'grid',gridTemplateColumns:result?'1fr 1fr':'1fr',gap:'24px'}}>
+        {/* Form */}
+        <div className="card">
+          <h3 style={{fontFamily:'var(--font-display)',fontWeight:'700',marginBottom:'20px'}}>📋 Health Metrics</h3>
+          <div style={{display:'flex',flexDirection:'column',gap:'14px'}}>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px'}}>
+              <div><label className="label">Systolic BP</label><input className="input-field" type="number" placeholder="120" value={form.systolic_bp} onChange={e=>setForm({...form,systolic_bp:e.target.value})}/></div>
+              <div><label className="label">Diastolic BP</label><input className="input-field" type="number" placeholder="80" value={form.diastolic_bp} onChange={e=>setForm({...form,diastolic_bp:e.target.value})}/></div>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px'}}>
+              <div><label className="label">Resting Heart Rate</label><input className="input-field" type="number" placeholder="72 bpm" value={form.resting_heart_rate} onChange={e=>setForm({...form,resting_heart_rate:e.target.value})}/></div>
+              <div><label className="label">Sleep Hours/Night</label><input className="input-field" type="number" placeholder="7.5" step="0.5" value={form.sleep_hours} onChange={e=>setForm({...form,sleep_hours:e.target.value})}/></div>
+            </div>
+            <div>
+              <label className="label">Stress Level: {form.stress_level}/10</label>
+              <input type="range" min="1" max="10" value={form.stress_level} onChange={e=>setForm({...form,stress_level:e.target.value})} style={{width:'100%',accentColor:'var(--accent-primary)'}}/>
+              <div style={{display:'flex',justifyContent:'space-between',fontSize:'0.75rem',color:'var(--text-muted)'}}>
+                <span>Very Low</span><span>Very High</span>
+              </div>
+            </div>
+            <div><label className="label">Daily Water Intake (liters)</label><input className="input-field" type="number" placeholder="2.5" step="0.5" value={form.water_intake_liters} onChange={e=>setForm({...form,water_intake_liters:e.target.value})}/></div>
+            <div style={{display:'flex',gap:'20px'}}>
+              <label style={{display:'flex',alignItems:'center',gap:'8px',cursor:'pointer',fontSize:'0.9rem'}}>
+                <input type="checkbox" checked={form.smoking} onChange={e=>setForm({...form,smoking:e.target.checked})} style={{accentColor:'var(--accent-primary)'}}/>
+                Smoking
+              </label>
+            </div>
+            <div>
+              <label className="label">Medical Conditions (optional)</label>
+              <input className="input-field" placeholder="diabetes, hypertension..." value={form.medical_conditions} onChange={e=>setForm({...form,medical_conditions:e.target.value})}/>
+            </div>
+            <button className="btn-primary" onClick={submit} disabled={loading} style={{marginTop:'8px',padding:'14px'}}>
+              {loading ? '⏳ Analyzing...' : '🔍 Assess My Health'}
+            </button>
+          </div>
+        </div>
+
+        {/* Results */}
+        {result && (
+          <div style={{display:'flex',flexDirection:'column',gap:'16px'}}>
+            <div className="card" style={{textAlign:'center',background:'linear-gradient(135deg, rgba(0,212,170,0.1), rgba(0,153,255,0.1))'}}>
+              <div style={{fontSize:'3rem',marginBottom:'8px'}}>{scoreEmoji}</div>
+              <div style={{fontFamily:'var(--font-display)',fontSize:'3.5rem',fontWeight:'900',color:scoreColor,lineHeight:1}}>{result.health_score}</div>
+              <div style={{fontSize:'1rem',color:'var(--text-secondary)',marginBottom:'8px'}}>Health Score</div>
+              <span className="badge" style={{background:`${scoreColor}20`,color:scoreColor,border:`1px solid ${scoreColor}40`,fontSize:'1rem',padding:'6px 16px'}}>
+                Grade {result.health_grade}
+              </span>
+            </div>
+
+            {result.bmi && (
+              <div className="card">
+                <h4 style={{fontWeight:'700',marginBottom:'12px'}}>⚖️ BMI Analysis</h4>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <span style={{fontSize:'2rem',fontWeight:'800',color:'var(--accent-primary)'}}>{result.bmi}</span>
+                  <span className="badge badge-green" style={{fontSize:'0.9rem'}}>{result.bmi_category}</span>
+                </div>
+                <div style={{marginTop:'12px',background:'rgba(255,255,255,0.05)',borderRadius:'8px',height:'8px',overflow:'hidden'}}>
+                  <div style={{
+                    width: `${Math.min(100, ((result.bmi - 10) / 30) * 100)}%`,
+                    height:'100%',
+                    background:scoreColor,
+                    transition:'width 1s ease'
+                  }}/>
+                </div>
+                <div style={{display:'flex',justifyContent:'space-between',fontSize:'0.7rem',color:'var(--text-muted)',marginTop:'4px'}}>
+                  <span>10</span><span>18.5</span><span>25</span><span>30</span><span>40</span>
+                </div>
+              </div>
+            )}
+
+            {result.recommendations && result.recommendations.length > 0 && (
+              <div className="card">
+                <h4 style={{fontWeight:'700',marginBottom:'12px'}}>💡 Recommendations</h4>
+                <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
+                  {result.recommendations.map((rec,i)=>(
+                    <div key={i} style={{display:'flex',gap:'8px',fontSize:'0.88rem',color:'var(--text-secondary)',padding:'8px',background:'rgba(0,212,170,0.05)',borderRadius:'8px'}}>
+                      <Icon name="check" size={14} color="var(--accent-primary)"/>{rec}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── PROFILE PAGE ─────────────────────────────────────────────────────────────
+function ProfilePage() {
+  const { user } = useAuth();
+  const [form, setForm] = useState({
+    full_name: user?.full_name || '',
+    age: user?.age || '',
+    gender: user?.gender || 'male',
+    height: user?.height || '',
+    weight: user?.weight || '',
+    fitness_level: user?.fitness_level || 'beginner',
+    fitness_goal: user?.fitness_goal || 'maintenance',
+    workout_preference: user?.workout_preference || 'home',
+    diet_preference: user?.diet_preference || 'vegetarian',
+  });
+  const [loading, setLoading] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const save = async () => {
+    setLoading(true);
+    try {
+      const payload = {...form, age:form.age?parseInt(form.age):null, height:form.height?parseFloat(form.height):null, weight:form.weight?parseFloat(form.weight):null};
+      await api.put('/users/profile', payload);
+      showToast('✅ Profile updated!');
+      setSaved(true);
+      setTimeout(()=>setSaved(false), 3000);
+    } catch(e) {
+      showToast(e.message || 'Failed', 'error');
+    } finally { setLoading(false); }
+  };
+
+  return (
+    <div className="fadeIn" style={{padding:'32px',maxWidth:'700px'}}>
+      <h1 style={{fontFamily:'var(--font-display)',fontSize:'1.8rem',fontWeight:'800',marginBottom:'4px'}}>Your Profile</h1>
+      <p style={{color:'var(--text-secondary)',marginBottom:'28px'}}>Update your personal information and preferences</p>
+
+      {/* Avatar */}
+      <div style={{display:'flex',alignItems:'center',gap:'16px',marginBottom:'28px',padding:'20px',background:'var(--bg-card)',borderRadius:'16px',border:'1px solid var(--border)'}}>
+        <div style={{width:'72px',height:'72px',borderRadius:'50%',background:'linear-gradient(135deg,var(--accent-primary),var(--accent-secondary))',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'2rem',fontWeight:'800',flexShrink:0}}>
+          {user?.full_name?.[0] || 'U'}
+        </div>
+        <div>
+          <div style={{fontFamily:'var(--font-display)',fontWeight:'700',fontSize:'1.2rem'}}>{user?.full_name}</div>
+          <div style={{color:'var(--text-secondary)',fontSize:'0.9rem'}}>{user?.email}</div>
+          <div style={{display:'flex',gap:'8px',marginTop:'8px'}}>
+            <span className="badge badge-green">🏆 {user?.fitness_level}</span>
+            <span className="badge badge-blue">🎯 {user?.fitness_goal?.replace(/_/g,' ')}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div style={{display:'flex',flexDirection:'column',gap:'16px'}}>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'14px'}}>
+            <div><label className="label">Full Name</label><input className="input-field" value={form.full_name} onChange={e=>setForm({...form,full_name:e.target.value})}/></div>
+            <div><label className="label">Gender</label>
+              <select className="input-field" value={form.gender} onChange={e=>setForm({...form,gender:e.target.value})}>
+                <option value="male">Male</option><option value="female">Female</option><option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'14px'}}>
+            <div><label className="label">Age</label><input className="input-field" type="number" value={form.age} onChange={e=>setForm({...form,age:e.target.value})}/></div>
+            <div><label className="label">Height (cm)</label><input className="input-field" type="number" value={form.height} onChange={e=>setForm({...form,height:e.target.value})}/></div>
+            <div><label className="label">Weight (kg)</label><input className="input-field" type="number" value={form.weight} onChange={e=>setForm({...form,weight:e.target.value})}/></div>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'14px'}}>
+            <div><label className="label">Fitness Level</label>
+              <select className="input-field" value={form.fitness_level} onChange={e=>setForm({...form,fitness_level:e.target.value})}>
+                <option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option>
+              </select>
+            </div>
+            <div><label className="label">Fitness Goal</label>
+              <select className="input-field" value={form.fitness_goal} onChange={e=>setForm({...form,fitness_goal:e.target.value})}>
+                <option value="weight_loss">Weight Loss</option><option value="weight_gain">Weight Gain</option><option value="muscle_gain">Muscle Gain</option><option value="maintenance">Maintenance</option><option value="endurance">Endurance</option>
+              </select>
+            </div>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'14px'}}>
+            <div><label className="label">Workout Preference</label>
+              <select className="input-field" value={form.workout_preference} onChange={e=>setForm({...form,workout_preference:e.target.value})}>
+                <option value="home">🏠 Home</option><option value="gym">🏋️ Gym</option><option value="outdoor">🌳 Outdoor</option>
+              </select>
+            </div>
+            <div><label className="label">Diet Preference</label>
+              <select className="input-field" value={form.diet_preference} onChange={e=>setForm({...form,diet_preference:e.target.value})}>
+                <option value="vegetarian">🥗 Vegetarian</option><option value="vegan">🌱 Vegan</option><option value="non_vegetarian">🥩 Non-Vegetarian</option><option value="keto">🥑 Keto</option><option value="paleo">🦴 Paleo</option>
+              </select>
+            </div>
+          </div>
+          <button className="btn-primary" onClick={save} disabled={loading} style={{padding:'14px',marginTop:'8px'}}>
+            {loading ? '⏳ Saving...' : saved ? '✅ Saved!' : '💾 Save Profile'}
+          </button>
+        </div>
+      </div>
+
+      {/* Account Info */}
+      <div className="card" style={{marginTop:'20px'}}>
+        <h3 style={{fontFamily:'var(--font-display)',fontWeight:'700',marginBottom:'16px'}}>🔐 Account Information</h3>
+        <div style={{display:'flex',flexDirection:'column',gap:'8px',fontSize:'0.9rem'}}>
+          <div style={{display:'flex',justifyContent:'space-between',padding:'8px 0',borderBottom:'1px solid rgba(255,255,255,0.05)'}}>
+            <span style={{color:'var(--text-secondary)'}}>Username</span>
+            <span style={{fontFamily:'var(--font-mono)',fontSize:'0.85rem'}}>{user?.username}</span>
+          </div>
+          <div style={{display:'flex',justifyContent:'space-between',padding:'8px 0',borderBottom:'1px solid rgba(255,255,255,0.05)'}}>
+            <span style={{color:'var(--text-secondary)'}}>Email</span>
+            <span>{user?.email}</span>
+          </div>
+          <div style={{display:'flex',justifyContent:'space-between',padding:'8px 0'}}>
+            <span style={{color:'var(--text-secondary)'}}>Member Since</span>
+            <span>{user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── MAIN APP ─────────────────────────────────────────────────────────────────
+function App() {
+  const { user } = useAuth();
+  const [page, setPage] = useState('dashboard');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showAuth, setShowAuth] = useState('login');
+
+  if (!user) {
+    return showAuth === 'login'
+      ? <LoginPage onSwitch={()=>setShowAuth('register')}/>
+      : <RegisterPage onSwitch={()=>setShowAuth('login')}/>;
+  }
+
+  const renderPage = () => {
+    switch(page) {
+      case 'dashboard': return <Dashboard/>;
+      case 'workout': return <WorkoutPage/>;
+      case 'nutrition': return <NutritionPage/>;
+      case 'progress': return <ProgressPage/>;
+      case 'aromi': return <AromiChat/>;
+      case 'health': return <HealthCheck/>;
+      case 'profile': return <ProfilePage/>;
+      default: return <Dashboard/>;
+    }
+  };
+
+  return (
+    <div style={{display:'flex',minHeight:'100vh',position:'relative'}}>
+      <div className="mesh-bg"/>
+      <Sidebar active={page} onNav={setPage} collapsed={sidebarCollapsed} onCollapse={()=>setSidebarCollapsed(c=>!c)}/>
+      <main style={{flex:1,overflowY:'auto',position:'relative',zIndex:1}}>
+        {renderPage()}
+      </main>
+    </div>
+  );
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <AuthProvider>
+    <App/>
+    <Toast/>
+  </AuthProvider>
+);
+</script>
+</body>
+</html>

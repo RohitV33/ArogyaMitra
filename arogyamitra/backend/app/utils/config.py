@@ -10,9 +10,12 @@ class Settings(BaseSettings):
 
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
-    CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:3001", "http://localhost:5173","https://arogya-mitra-beta.vercel.app"]
-
-    # AI Services
+    CORS_ORIGINS: List[str] = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://arogya-mitra-beta.vercel.app"
+        ]
+        # AI Services
     GROQ_API_KEY: str = "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"
     OPENAI_API_KEY: str = "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"
     GEMINI_API_KEY: str = "AIzaSyBGJycryxrnh0Ejdn-1dmYC3Jfe_Q2DTiQ"
